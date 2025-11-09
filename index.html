@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>My Bank Card</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <h2 id="status">Loading...</h2>
+  <script>
+    const tg = window.Telegram.WebApp;
+    const username = tg.initDataUnsafe?.user?.username || "Guest";
+
+    fetch("https://telegram-marqeta-app.onrender.com", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username })
+    })
+    .then(r => r.json())
+    .then(data => {
+      document.getElementById("status").innerHTML = `
+        ✅ Карта создана! <br><br>
+        <b>${username}</b><br>
+        Card Token: ${data.card.token}<br>
+        Card Type: ${data.card.type}<br>
+        <button onclick="tg.close()">Закрыть</button>
+      `;
+    })
+    .catch(e => {
+      document.getElementById("status").innerHTML = "Ошибка: " + e;
+    });
+  </script>
+</body>
+</html>
